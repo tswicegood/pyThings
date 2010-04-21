@@ -10,7 +10,7 @@ Usage
 It attempts to mimic the Thing's AppleScript API where appropriate.  One area
 that it does simplify is the ability to access the top-level lists.  Rather
 than having to go through the ``lists`` property, you can access the ``Today``
-list directly:
+list directly::
 
     from things import Things
     t = Things()
@@ -19,7 +19,7 @@ list directly:
 Likewise, I've started adding some convinence functions in that handle the boolean
 checks so you don't have to compare against the ``appscript.k.*`` values by hand.
 
-For example:
+For example::
 
     from things import Things
     t = Things()
