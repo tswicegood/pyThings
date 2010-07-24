@@ -43,27 +43,31 @@ class DictLikeObject(object):
         return getattr(self, key)
 
 class Todo(AppleScriptHelper, NamedObject):
+    OPEN = appscript.k.open
+    COMPLETED = appscript.k.completed
+    CANCELED = appscript.k.canceled
+
     def __init__(self, raw):
         self.raw = raw
         AppleScriptHelper.__init__(self)
 
     def is_complete(self):
-        return self.status == appscript.k.completed
+        return self.status == Todo.COMPLETED
 
     def complete(self):
-        self.status = appscript.k.completed
+        self.status = Todo.COMPLETED
 
     def is_open(self):
-        return self.status == appscript.k.open
+        return self.status == Todo.OPEN
 
     def open(self):
-        self.status = appscript.k.open
+        self.status = Todo.OPEN
 
     def is_canceled(self):
-        return self.status == appscript.k.canceled
+        return self.status == Todo.CANCELED
 
     def cancel(self):
-        self.status = appscript.k.canceled
+        self.status = Todo.CANCELED
 
     def move(self, to_list):
         self.raw.move(to=to_list.raw)
