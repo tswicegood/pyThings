@@ -116,11 +116,16 @@ class TodoList(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty):
         AppleScriptHelper.__init__(self)
 
 
+class Project(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty, TaggableItem):
+    def __init__(self, raw):
+        self.raw = raw
+        AppleScriptHelper.__init__(self)
+
 class ProjectList(AppleScriptHelper, NamedObject, DictLikeObject, TodoAdder):
     def __init__(self, raw):
         self.raw = raw
         for a in self.raw.to_dos.get():
-            self.__dict__[a.name.get()] = TodoList(a)
+            self.__dict__[a.name.get()] = Project(a)
         AppleScriptHelper.__init__(self)
 
     def __getattr__(self, key):
