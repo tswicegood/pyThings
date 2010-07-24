@@ -37,6 +37,9 @@ class TodosProperty(object):
     def to_dos(self):
         return [Todo(a) for a in self.raw.to_dos.get()]
 
+    def __iter__(self):
+        return iter(self.to_dos)
+
 
 class NamedObject(object):
     def __repr__(self):
@@ -112,8 +115,6 @@ class TodoList(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty):
         self.raw = raw
         AppleScriptHelper.__init__(self)
 
-    def __iter__(self):
-        return iter(self.to_dos)
 
 class ProjectList(AppleScriptHelper, NamedObject, DictLikeObject, TodoAdder):
     def __init__(self, raw):
