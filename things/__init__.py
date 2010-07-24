@@ -83,7 +83,23 @@ class Todo(AppleScriptHelper, NamedObject):
 
     @property
     def tags(self):
-        return TagList(self.raw.tags.get())
+        return [a.strip() for a in self.raw.tag_names.get().split(',')]
+
+    def set_tags(self, tags):
+        self.raw.tag_names.set(','.join(tags))
+
+    def add_tag(self, tag):
+        tags = self.tags
+        if tag in tags:
+            return
+        self.tags = tags + [tag,]
+
+    def remove_tag(self, tag):
+        tags = self.tags
+        if tag not in tags:
+            return
+        tags.remove(tag)
+        self.tags = tags
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.status)
