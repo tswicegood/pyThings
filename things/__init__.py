@@ -29,6 +29,12 @@ class TodoAdder(object):
         properties = dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
         self.raw.make(new=appscript.k.to_do, with_properties=properties)
 
+class TodosProperty(object):
+    @property
+    def to_dos(self):
+        return [Todo(a) for a in self.raw.to_dos.get()]
+
+
 class NamedObject(object):
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, unicode(self))
@@ -79,14 +85,10 @@ class Todo(AppleScriptHelper, NamedObject):
     def __str__(self):
         return "%s (%s)" % (self.name, self.status)
 
-class TodoList(AppleScriptHelper, NamedObject, TodoAdder):
+class TodoList(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty):
     def __init__(self, raw):
         self.raw = raw
         AppleScriptHelper.__init__(self)
-
-    @property
-    def to_dos(self):
-        return [Todo(a) for a in self.raw.to_dos.get()]
 
     def __iter__(self):
         return iter(self.to_dos)
@@ -130,9 +132,7 @@ class PeopleList(SpecialList):
     list_of_name = Person
     pass
 
-
-
-class Tag(AppleScriptHelper, NamedObject):
+class Tag(AppleScriptHelper, NamedObject, TodosProperty):
     def __init__(self, raw):
         self.raw = raw
         super(Tag, self).__init__()
