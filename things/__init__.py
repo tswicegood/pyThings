@@ -65,6 +65,9 @@ class Todo(AppleScriptHelper, NamedObject):
     def cancel(self):
         self.status = appscript.k.canceled
 
+    def move(self, to_list):
+        self.raw.move(to=to_list.raw)
+
     def __str__(self):
         return "%s (%s)" % (self.name, self.status)
 
