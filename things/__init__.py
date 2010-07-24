@@ -20,7 +20,10 @@ class AppleScriptHelper(object):
 
     def __setattr__(self, key, value):
         if self._loaded:
-            getattr(self.raw, key).set(value)
+            if hasattr(self, "set_%s" % key):
+                getattr(self, 'set_%s' % key)(value)
+            else:
+                getattr(self.raw, key).set(value)
         else:
             self.__dict__[key] = value
 
