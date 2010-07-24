@@ -72,6 +72,10 @@ class Todo(AppleScriptHelper, NamedObject):
     def move(self, to_list):
         self.raw.move(to=to_list.raw)
 
+    @property
+    def tags(self):
+        return TagList(self.raw.tags.get())
+
     def __str__(self):
         return "%s (%s)" % (self.name, self.status)
 
