@@ -63,6 +63,8 @@ Look at the notes and set the notes
 Check and set the status of a task
 """"
 
+::
+
     >>> current.status
     k.open
     >>> from things import Todo
@@ -85,12 +87,103 @@ Check and set the status of a task
 that causes tasks from Today to be shifted to Next when re-opening them from
 a canceled state.
 
-Seeing the tasks stored in Next
-"""""""""""""
+Dealing with lists
+""""
+
+Every ``TodoList`` object has a ``to_dos`` list on it that contains all of the
+tasks for that list.
+::
+
+    >>> t.today
+    <TodoList: Today>
+    >>> t.next
+    <TodoList: Next>
+    >>> t.someday
+    <TodoList: Someday>
+
+Moving between lists
+""""
 
 ::
 
-    t.next.to_dos
+    # move current to Next
+    >>> current.move(t.next)
+    # move back to Today
+    >>> current.move(t.today)
+
+System wide tags
+""""
+
+::
+
+    >>> t.tags
+    <TagList: ...>
+
+Viewing todos for a given tag
+""""
+
+::
+
+    >>> t.tags['opensource'].to_dos
+    [<Todo: Create a d51.fabric.tasks.sphinx task repo>]
+
+Modifying tags for a task or project
+""""
+
+::
+
+    >>> current.tags
+    <TagList: {u'python': <Tag: python>}>
+    >>> current.tags += ['opensource']
+    >>> current.tags
+    <TagList: {u'python': <Tag: python>, u'opensource': <Tag: opensource>}>
+    >>> current.tags -= 'opensource'
+    >>> current.tags
+    <TagList: {u'python': <Tag: python>}>
+    >>> current.add_tag('opensource')
+    >>> current.tags
+    <TagList: {u'python': <Tag: python>, u'opensource': <Tag: opensource>}>
+    >>> current.remove_tag('opensource')
+    >>> current.tags
+    <TagList: {u'python': <Tag: python>}>
+    >>> current.tags = []
+    >>> current.tags
+    <TagList: {}>
+    >>> current.tags = [u'python', u'opensource']
+    <TagList: {u'python': <Tag: python>, u'opensource': <Tag: opensource>}>
+
+
+Removing tags from a project or task
+""""
+
+It's important to note the context in when you call ``del``.  Calling it from a
+``Todo`` or a ``Project`` item such as the code immediately below deletes the
+tag from that item.  Calling it from the main ``Things`` object deletes the tag
+from Things entirely.
+
+::
+
+    >>> current.tags += 'remove me'
+    >>> del current.tags['remove me']
+
+Or::
+
+    >>> current.tags -= 'remove me'
+
+
+Removing tags from Things
+""""
+
+::
+
+    >>> t.tags -= 'from python'
+
+Or::
+
+    >>> del t.tags['from python']
+
+Remember, removing tags from the top level like this completely removes the tag
+from within Things.
 
 
 Getting Involved

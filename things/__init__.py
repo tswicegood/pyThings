@@ -52,12 +52,12 @@ class NamedObject(object):
 
 class DictLikeObject(object):
     def __getitem__(self, key):
-        return getattr(self, key)
+        return self._internal[key]
 
 class TaggableItem(object):
     @property
     def tags(self):
-        return TagList(self.raw.tags.get())
+        return TagList(self.raw.tags, item=self)
 
     def set_tags(self, tags):
         tags = [tags] if type(tags) is str else tags
@@ -124,15 +124,17 @@ class Project(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty, Taggable
 class ProjectList(AppleScriptHelper, NamedObject, DictLikeObject, TodoAdder):
     def __init__(self, raw):
         self.raw = raw
+        self._internal = {}
         for a in self.raw.to_dos.get():
-            self.__dict__[a.name.get()] = Project(a)
+            self._internal[a.name.get()] = Project(a)
         AppleScriptHelper.__init__(self)
 
     def __getattr__(self, key):
         try:
             return super(ProjectList, self).__getattr__(key)
         except KeyError:
-            return self.__dict__[key]
+            if key in self.__dict__:
+                return self.__dict__[key]
 
 
 class SpecialList(AppleScriptHelper, DictLikeObject):
@@ -163,42 +165,85 @@ class PeopleList(SpecialList):
 class Tag(AppleScriptHelper, NamedObject, TodosProperty):
     def __init__(self, raw):
         self.raw = raw
-        super(Tag, self).__init__()
+        AppleScriptHelper.__init__(self)
 
     @property
     def parent_tag(self):
         raw = self.raw.parent_tag.get()
         return None if raw == appscript.k.missing_value else Tag(raw)
 
+    def delete(self):
+        self.raw.delete()
+
+    class NotFoundError(Exception):
+        def __init__(self, name):
+            msg = "Unable to locate tag '%s', perhaps try creating it via Things().add_tag(name='%s')" % (name, name)
+            super(Tag.NotFoundError, self).__init__(msg)
+
+
 class TagList(DictLikeObject):
-    def __init__(self, raw):
+    def __init__(self, raw, item=False):
+        self.item = item
+        self.raw = raw
+        self._internal = {}
+        raw = raw if type(raw) is list else raw.get()
         for tag in raw:
-            self.__dict__[tag.name.get()] = Tag(tag)
+            self._internal[tag.name.get()] = Tag(tag)
         super(TagList, self).__init__()
 
-    def __contains__(self, k):
-        return k in self.__dict__
+    def __getitem__(self, k):
+        try:
+            return DictLikeObject.__getitem__(self, k)
+        except KeyError:
+            raise Tag.NotFoundError(k)
 
     def __repr__(self):
-        return "<%s: %s>" % (self.__class__.__name__, unicode(self.__dict__))
+        return "<%s: %s>" % (self.__class__.__name__, unicode(self._internal))
+
+    def __contains__(self, k):
+        return k in self._internal
 
     def __add__(self, k):
-        k = [k, ] if type(k) is str else k
-        return self.values() + k
-
+        if self.item:
+            k = [k, ] if type(k) is str else k
+            self.item.tags = self.values() + k
+        else:
+            new(Things.app, appscript.k.tag, name=k)
     def __sub__(self, k):
-        k = [k, ] if type(k) is str else k
+        self.__handle_removal(k)
+
+    def __delitem__(self, k):
+        self.__handle_removal(k)
+
+    def __handle_removal(self, k):
+        if self.item:
+            self.remove_tag(k)
+        else:
+            self.delete_tag(k)
+
+    def remove_tag(self, tag_name):
+        tag_name = [tag_name, ] if type(tag_name) is str else tag_name
         values = self.values()
-        [values.remove(a) for a in k]
+        [values.remove(a) for a in tag_name]
         return values
 
+
+    def delete_tag(self, tag_name):
+        try:
+            tag = self._internal[tag_name]
+            del self._internal[tag_name]
+            tag.delete()
+        except KeyError:
+            raise Tag.NotFoundError(tag_name)
+
     def values(self):
-        return [a.name for a in self.__dict__.values()]
+        return [a.name for a in self._internal.values()]
 
 
 class Things(AppleScriptHelper, TodoAdder):
+    app = appscript.app("Things")
     def __init__(self):
-        self.raw = appscript.app("Things")
+        self.raw = Things.app
         special = self.raw.areas.get() + self.raw.people.get()
         regular = [(a.name.get().lower(), a) for a in self.raw.lists.get() if a not in special]
         for key, raw_list in regular:
@@ -206,8 +251,28 @@ class Things(AppleScriptHelper, TodoAdder):
                 setattr(self, key, ProjectList(raw_list))
             else:
                 setattr(self, key, TodoList(raw_list))
-        self.tags = TagList(self.raw.tags.get())
         self.areas = AreaList(self.raw.areas)
         self.people = PeopleList(self.raw.people)
         super(Things, self).__init__()
+
+    @property
+    def tags(self):
+        return TagList(self.raw.tags)
+
+    # This is necessary to avoid an exception using the += syntax to add a new
+    # system-level tag.
+    def set_tags(self, *args):
+        return self.tags
+
+    def new_tag(self, **kwargs):
+        return Tag(new(self.raw, appscript.k.tag, **kwargs))
+
+    def new_to_do(self, **kwargs):
+        return Todo(new(self.raw, appscript.k.to_do, **kwargs))
+
+
+def new(app, type, **kwargs):
+    properties = dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
+    return app.make(new=type, with_properties=properties)
+
 
