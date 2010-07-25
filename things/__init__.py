@@ -278,9 +278,15 @@ class Things(AppleScriptHelper, TodoAdder):
     def selected(self):
         return [Todo(a) for a in self.raw.selected_to_dos.get()]
 
+    def show_quick_entry(self, **kwargs):
+        return self.raw.show_quick_entry_panel(with_properties=build_properties(**kwargs))
+
+
+def build_properties(**kwargs):
+    return dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
 
 def new(app, type, **kwargs):
-    properties = dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
+    properties = build_properties(**kwargs)
     return app.make(new=type, with_properties=properties)
 
 

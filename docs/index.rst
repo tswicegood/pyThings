@@ -205,7 +205,19 @@ Editing tasks or projects
     >>> t.projects['pyThings'].edit()
 
 
+Show the quick entry
+""""
 
+::
+
+    >>> t.show_quick_entry()
+
+You can add a name and notes as well::
+
+    >>> t.show_quick_entry(name='Some name', notes='Some notes here')
+
+*Note*: This purposely does not implement autofill as there is a bug inside
+Spaces that causes your keyboard to freeze up.
 
 Getting Involved
 -------
