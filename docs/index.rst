@@ -228,6 +228,14 @@ Empty the trash
     >>> t.empty_trash()
 
 
+Log completed tasks
+""""
+
+::
+
+    >>> t.log_completed()
+
+
 Getting Involved
 -------
 

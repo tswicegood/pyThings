@@ -284,6 +284,9 @@ class Things(AppleScriptHelper, TodoAdder):
     def empty_trash(self):
         return self.raw.empty_trash()
 
+    def log_completed(self):
+        return self.raw.log_completed_now()
+
 
 def build_properties(**kwargs):
     return dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
