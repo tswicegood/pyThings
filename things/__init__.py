@@ -76,8 +76,12 @@ class TaggableItem(object):
         self.tags = self.tags - tag
 
 
+class EditableItem(object):
+    def edit(self):
+        self.raw.edit()
 
-class Todo(AppleScriptHelper, NamedObject, TaggableItem):
+
+class Todo(AppleScriptHelper, NamedObject, TaggableItem, EditableItem):
     OPEN = appscript.k.open
     COMPLETED = appscript.k.completed
     CANCELED = appscript.k.canceled
@@ -116,7 +120,7 @@ class TodoList(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty):
         AppleScriptHelper.__init__(self)
 
 
-class Project(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty, TaggableItem):
+class Project(AppleScriptHelper, NamedObject, TodoAdder, TodosProperty, TaggableItem, EditableItem):
     def __init__(self, raw):
         self.raw = raw
         AppleScriptHelper.__init__(self)

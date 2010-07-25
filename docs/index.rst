@@ -196,6 +196,17 @@ Grabbing currently selected tasks
      <Todo: Flesh out the rest of pyThings>]
 
 
+Editing tasks or projects
+""""
+
+::
+
+    >>> t.today.to_dos[0].edit()
+    >>> t.projects['pyThings'].edit()
+
+
+
+
 Getting Involved
 -------
 
