@@ -113,9 +113,128 @@ of the tasks.  pyThings currently loads all tasks when you initialize the
 that causes tasks from Today to be shifted to Next when re-opening them from
 a canceled state.</p>
 </div>
-<div class="section" id="seeing-the-tasks-stored-in-next">
-<h3>Seeing the tasks stored in Next<a class="headerlink" href="#seeing-the-tasks-stored-in-next" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">to_dos</span>
+<div class="section" id="dealing-with-lists">
+<h3>Dealing with lists<a class="headerlink" href="#dealing-with-lists" title="Permalink to this headline">¶</a></h3>
+<p>Every <tt class="docutils literal"><span class="pre">TodoList</span></tt> object has a <tt class="docutils literal"><span class="pre">to_dos</span></tt> list on it that contains all of the
+tasks for that list.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">today</span>
+<span class="go">&lt;TodoList: Today&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">next</span>
+<span class="go">&lt;TodoList: Next&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">someday</span>
+<span class="go">&lt;TodoList: Someday&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="moving-between-lists">
+<h3>Moving between lists<a class="headerlink" href="#moving-between-lists" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre># move current to Next
+&gt;&gt;&gt; current.move(t.next)
+# move back to Today
+&gt;&gt;&gt; current.move(t.today)</pre>
+</div>
+</div>
+<div class="section" id="system-wide-tags">
+<h3>System wide tags<a class="headerlink" href="#system-wide-tags" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: ...&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="viewing-todos-for-a-given-tag">
+<h3>Viewing todos for a given tag<a class="headerlink" href="#viewing-todos-for-a-given-tag" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s">&#39;opensource&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_dos</span>
+<span class="go">[&lt;Todo: Create a d51.fabric.tasks.sphinx task repo&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modifying-tags-for-a-task-or-project">
+<h3>Modifying tags for a task or project<a class="headerlink" href="#modifying-tags-for-a-task-or-project" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;opensource&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;, u&#39;opensource&#39;: &lt;Tag: opensource&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">-=</span> <span class="s">&#39;opensource&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="s">&#39;opensource&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;, u&#39;opensource&#39;: &lt;Tag: opensource&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">remove_tag</span><span class="p">(</span><span class="s">&#39;opensource&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span>
+<span class="go">&lt;TagList: {}&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s">u&#39;python&#39;</span><span class="p">,</span> <span class="s">u&#39;opensource&#39;</span><span class="p">]</span>
+<span class="go">&lt;TagList: {u&#39;python&#39;: &lt;Tag: python&gt;, u&#39;opensource&#39;: &lt;Tag: opensource&gt;}&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="removing-tags-from-a-project-or-task">
+<h3>Removing tags from a project or task<a class="headerlink" href="#removing-tags-from-a-project-or-task" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s important to note the context in when you call <tt class="docutils literal"><span class="pre">del</span></tt>.  Calling it from a
+<tt class="docutils literal"><span class="pre">Todo</span></tt> or a <tt class="docutils literal"><span class="pre">Project</span></tt> item such as the code immediately below deletes the
+tag from that item.  Calling it from the main <tt class="docutils literal"><span class="pre">Things</span></tt> object deletes the tag
+from Things entirely.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">+=</span> <span class="s">&#39;remove me&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">current</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s">&#39;remove me&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">current</span><span class="o">.</span><span class="n">tags</span> <span class="o">-=</span> <span class="s">&#39;remove me&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="removing-tags-from-things">
+<h3>Removing tags from Things<a class="headerlink" href="#removing-tags-from-things" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">tags</span> <span class="o">-=</span> <span class="s">&#39;from python&#39;</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">t</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s">&#39;from python&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Remember, removing tags from the top level like this completely removes the tag
+from within Things.</p>
+</div>
+<div class="section" id="grabbing-currently-selected-tasks">
+<h3>Grabbing currently selected tasks<a class="headerlink" href="#grabbing-currently-selected-tasks" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">selected</span>
+<span class="go">[&lt;Todo: Start documentation/website for pyThings&gt;,</span>
+<span class="go"> &lt;Todo: Flesh out the rest of pyThings&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="editing-tasks-or-projects">
+<h3>Editing tasks or projects<a class="headerlink" href="#editing-tasks-or-projects" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">today</span><span class="o">.</span><span class="n">to_dos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">edit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">projects</span><span class="p">[</span><span class="s">&#39;pyThings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">edit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-the-quick-entry">
+<h3>Show the quick entry<a class="headerlink" href="#show-the-quick-entry" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">show_quick_entry</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can add a name and notes as well:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">show_quick_entry</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Some name&#39;</span><span class="p">,</span> <span class="n">notes</span><span class="o">=</span><span class="s">&#39;Some notes here&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Note</em>: This purposely does not implement autofill as there is a bug inside
+Spaces that causes your keyboard to freeze up.</p>
+</div>
+<div class="section" id="empty-the-trash">
+<h3>Empty the trash<a class="headerlink" href="#empty-the-trash" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">empty_trash</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="log-completed-tasks">
+<h3>Log completed tasks<a class="headerlink" href="#log-completed-tasks" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">log_completed</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -171,7 +290,18 @@ intance.</li>
 <li><a class="reference internal" href="#looking-at-the-top-task-for-today">Looking at the top task for Today</a></li>
 <li><a class="reference internal" href="#look-at-the-notes-and-set-the-notes">Look at the notes and set the notes</a></li>
 <li><a class="reference internal" href="#check-and-set-the-status-of-a-task">Check and set the status of a task</a></li>
-<li><a class="reference internal" href="#seeing-the-tasks-stored-in-next">Seeing the tasks stored in Next</a></li>
+<li><a class="reference internal" href="#dealing-with-lists">Dealing with lists</a></li>
+<li><a class="reference internal" href="#moving-between-lists">Moving between lists</a></li>
+<li><a class="reference internal" href="#system-wide-tags">System wide tags</a></li>
+<li><a class="reference internal" href="#viewing-todos-for-a-given-tag">Viewing todos for a given tag</a></li>
+<li><a class="reference internal" href="#modifying-tags-for-a-task-or-project">Modifying tags for a task or project</a></li>
+<li><a class="reference internal" href="#removing-tags-from-a-project-or-task">Removing tags from a project or task</a></li>
+<li><a class="reference internal" href="#removing-tags-from-things">Removing tags from Things</a></li>
+<li><a class="reference internal" href="#grabbing-currently-selected-tasks">Grabbing currently selected tasks</a></li>
+<li><a class="reference internal" href="#editing-tasks-or-projects">Editing tasks or projects</a></li>
+<li><a class="reference internal" href="#show-the-quick-entry">Show the quick entry</a></li>
+<li><a class="reference internal" href="#empty-the-trash">Empty the trash</a></li>
+<li><a class="reference internal" href="#log-completed-tasks">Log completed tasks</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#getting-involved">Getting Involved</a><ul>
