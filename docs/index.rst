@@ -219,6 +219,15 @@ You can add a name and notes as well::
 *Note*: This purposely does not implement autofill as there is a bug inside
 Spaces that causes your keyboard to freeze up.
 
+
+Empty the trash
+""""
+
+::
+
+    >>> t.empty_trash()
+
+
 Getting Involved
 -------
 

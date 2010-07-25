@@ -281,6 +281,9 @@ class Things(AppleScriptHelper, TodoAdder):
     def show_quick_entry(self, **kwargs):
         return self.raw.show_quick_entry_panel(with_properties=build_properties(**kwargs))
 
+    def empty_trash(self):
+        return self.raw.empty_trash()
+
 
 def build_properties(**kwargs):
     return dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])
