@@ -270,6 +270,10 @@ class Things(AppleScriptHelper, TodoAdder):
     def new_to_do(self, **kwargs):
         return Todo(new(self.raw, appscript.k.to_do, **kwargs))
 
+    @property
+    def selected(self):
+        return [Todo(a) for a in self.raw.selected_to_dos.get()]
+
 
 def new(app, type, **kwargs):
     properties = dict([(getattr(appscript.k, key), value) for key, value in kwargs.items()])

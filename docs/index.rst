@@ -186,6 +186,16 @@ Remember, removing tags from the top level like this completely removes the tag
 from within Things.
 
 
+Grabbing currently selected tasks
+""""
+
+::
+
+    >>> t.selected
+    [<Todo: Start documentation/website for pyThings>,
+     <Todo: Flesh out the rest of pyThings>]
+
+
 Getting Involved
 -------
 
